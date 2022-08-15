@@ -42,10 +42,10 @@
 
         let m_webSocket = undefined;
         let m_username = undefined;
-        displayElement("activelable");
-        displayElement("massegecard");
+        _displayElement("activelable");
+        _displayElement("massegecard");
         var input = document.getElementById("username");
-        useEnterKey(input, "buttonconnected");
+        _useEnterKey(input, "buttonconnected");
 
         function connect() {
             console.log('on connect');
@@ -70,14 +70,14 @@
 
 
                 m_webSocket = webSocket;
-                displayElement("activelable", false);
-                displayElement("massegecard", false);
-                displayElement("usernamecard");
+                _displayElement("activelable", false);
+                _displayElement("massegecard", false);
+                _displayElement("usernamecard");
 
 
 
                 var inputmsg = document.getElementById("message");
-                useEnterKey(inputmsg, "buttonsend");
+                _useEnterKey(inputmsg, "buttonsend");
             };
 
 
@@ -105,9 +105,9 @@
                     case "rejectusername":
                         const username = data.changedusername;
                         _appendMessageToList(`The username already exists / empty , please choose another one`);
-                        displayElement("activelable", false);
-                        displayElement("massegecard");
-                        displayElement("usernamecard", false);
+                        _displayElement("activelable", false);
+                        _displayElement("massegecard");
+                        _displayElement("usernamecard", false);
                         document.getElementById("username").value = '';
                         break;
                 }
@@ -157,7 +157,7 @@
             document.getElementById("actives").innerHTML = `<br class="active-users">${message}</br>`
         }
 
-        function useEnterKey(input, button) {
+        function _useEnterKey(input, button) {
             input.addEventListener("keypress", function (event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
@@ -166,7 +166,7 @@
             });
         }
 
-        function displayElement(id, none = true) {
+        function _displayElement(id, none = true) {
 
             document.getElementById(id).style.display = none ? 'none' : 'inline';
         }
