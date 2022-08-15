@@ -14,17 +14,19 @@ wss.on('connection', function connection(ws) {
         case 'username':
           const username = msg.senderUsername;
           console.log(`username: ${username}, has: ${usernameToWS.has(username)}`);
-          if (usernameToWS.has(username)) {
+          if (usernameToWS.has(username) || username === '') {
             ws.send(JSON.stringify({
               type: 'rejectusername'
             }))
             ws.close();
           }
+        //test
+          else{
           usernameToWS.set(username, ws);
           wsToUsername.set(ws, username);
           m_username = username;
-
           _sendActiveUsersMessage(username, true);
+          }
           break;
 
           case 'message':
