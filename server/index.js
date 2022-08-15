@@ -24,7 +24,7 @@ wss.on('connection', function connection(ws) {
           wsToUsername.set(ws, username);
           m_username = username;
 
-          _sendActiveUsersMessage();
+          _sendActiveUsersMessage(username, true);
           break;
 
           case 'message':
@@ -47,7 +47,7 @@ wss.on('connection', function connection(ws) {
       const username = wsToUsername.get(ws);
       wsToUsername.delete(ws);
       usernameToWS.delete(username);
-      _sendActiveUsersMessage();
+      _sendActiveUsersMessage(username, false);
     } else {
       console.warn('username not found when disconnected')
     }
@@ -58,9 +58,11 @@ wss.on('connection', function connection(ws) {
 });
 
 
-function _sendActiveUsersMessage() {
+function _sendActiveUsersMessage(username, active) {
   _sendBrodcast(JSON.stringify({
     type: 'activeusers',
+    username: username,
+    active: active,
     connectedUserList: Array.from(usernameToWS.keys())
   }));
 }

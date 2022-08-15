@@ -14,15 +14,21 @@
             <button class="btn btn-primary" onclick="sendMessage()">Submit</button>
             <button class="btn btn-primary" onclick="connect()">Connect</button>
             <div>
-                <ul class="list-group" id="messages">
+                <ul class="active-users" id="actives">
 
+                </ul>
+            </div>
+            <div>
+                <ul class="list-group" id="messages">
+                        
                   </ul>
             </div>
 
 
         <script>
             let m_webSocket = undefined;
-            let m_username = undefined
+            let m_username = undefined;
+    
 
             function connect() {
                 console.log('on connect');
@@ -55,7 +61,23 @@
                 
                 webSocket.onmessage = (event) => {
                     console.log(event.data);
-                    _appendMessageToList(`Recive: ${event.data}`)
+                    const data = JSON.parse(event.data);
+                    const type = data.type;
+                    // _appendMessageToList(`Recive: ${event.data}`);
+                    if(type == 'activeusers'){
+                        const active = data.active;
+                        const connectedUserList = data.connectedUserList;
+                        _appendMessageToListUsers(`Active Users: ${connectedUserList}`);
+                        if(active){
+                            _appendMessageToList(`${data.username} Logged in`);
+                        }else{
+                            _appendMessageToList(`${data.username} Logged out`);
+                        }
+                    }
+                    if(type == 'message'){
+                        const sender = data.senderUsername;
+                        _appendMessageToList(`${sender}: ${data.message}`);
+                    }
                 }
 
                 webSocket.onclose = (event) => {
@@ -80,8 +102,8 @@
                         type: "message",
                         message: message
                     };
-
-                    _appendMessageToList('Send: ' + JSON.stringify(msg));
+                    _appendMessageToList(`Send : ${message} `);
+                    // _appendMessageToList('Send: ' + JSON.stringify(msg));
 
                     m_webSocket.send(JSON.stringify(msg))
                 } else {
@@ -92,6 +114,10 @@
             function _appendMessageToList(message) {
                 const orig = document.getElementById("messages").innerHTML
                 document.getElementById("messages").innerHTML = orig + `<li class="list-group-item">${message}</li>`
+            }
+
+            function _appendMessageToListUsers(message) {
+                document.getElementById("actives").innerHTML = `<li class="active-users">${message}</li>`
             }
 
         </script>
